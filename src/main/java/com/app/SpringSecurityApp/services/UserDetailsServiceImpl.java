@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import com.app.SpringSecurityApp.entities.UserEntity;
 import com.app.SpringSecurityApp.repository.UserRepository;
 
 @Service
-public class UserDetailsServiceImpl implements IUserDetailService{
+public class UserDetailsServiceImpl implements UserDetailsService{
 
     private final UserRepository userRepository;
     
@@ -26,7 +27,7 @@ public class UserDetailsServiceImpl implements IUserDetailService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        UserEntity userEntity=userRepository.findUserEntityByUserName(username)
+        UserEntity userEntity=userRepository.findUserEntityByUsername(username)
             .orElseThrow(()->new UsernameNotFoundException("El usuario no existe"));
 
         List<SimpleGrantedAuthority> authorities=new ArrayList<>();

@@ -38,6 +38,7 @@ public class SpringSecurityAppApplication {
 			
 			UserEntity usuarioAdmin=new UserEntity();
 			usuarioAdmin.setUsername("Leandro");
+			usuarioAdmin.setEnabled(true);
 			usuarioAdmin.setPassword("12345");
 			usuarioAdmin.setAccountNoExpired(true);
 			usuarioAdmin.setAccountNoLocked(true);

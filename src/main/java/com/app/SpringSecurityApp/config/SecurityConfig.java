@@ -1,8 +1,5 @@
 package com.app.SpringSecurityApp.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,14 +12,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.app.SpringSecurityApp.repository.UserRepository;
+import com.app.SpringSecurityApp.services.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +26,7 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,UserRepository userRepository) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
         this.authenticationConfiguration = authenticationConfiguration;
     }
 
@@ -45,7 +40,8 @@ public class SecurityConfig {
                 //Configuracion endpoints publicos
                 httpR.requestMatchers(HttpMethod.GET,"/auth/hello").permitAll();
                 //Configuracion de endpoints privados
-                httpR.requestMatchers(HttpMethod.GET,"/auth/hello-secured").hasAuthority("CREATE");
+                httpR.requestMatchers(HttpMethod.GET,"/auth/hello-secured").hasRole("ADMIN");
+
                 //Configurar el resto de endpoints --NO ESPECIFICADOS
                 httpR.anyRequest().denyAll();
             });
@@ -60,17 +56,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetails());
+    public AuthenticationProvider authenticationProvider(UserDetailsServiceImpl userDetails) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetails);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
-    } 
-
-    @Bean
-    public UserDetailsService userDetails() {
-        List<UserDetails> userDetails = new ArrayList<>();
-
-        return new InMemoryUserDetailsManager(userDetails);
     }
 
     @Bean
