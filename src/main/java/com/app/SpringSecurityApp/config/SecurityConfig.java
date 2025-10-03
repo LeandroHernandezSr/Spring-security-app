@@ -17,8 +17,6 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.app.SpringSecurityApp.services.UserDetailsServiceImpl;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -56,7 +54,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailsServiceImpl userDetails) {
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetails) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetails);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
